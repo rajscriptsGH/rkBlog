@@ -5,13 +5,13 @@ import { ThemeToggle } from "./theme-toggle";
 export function Navbar() {
     return (
         <nav className="w-full py-5 flex items-center justify-between">
-            <div className="flex items-center">
+            <div className="flex items-center md:gap-40">
                 <Link href="/">
                     <h1 className="text-3xl font-bold">rk<span className="text-orange-500">Blog</span></h1>
                 </Link>
 
-                <div className="flex items-center gap-2">
-                    <Link className={buttonVariants({ variant: "ghost" })} href="/">Home</Link>
+                <div className="flex items-center">
+                    {/* <Link className={buttonVariants({ variant: "ghost" })} href="/">Home</Link> */}
                     <Link className={buttonVariants({ variant: "ghost" })} href="/blog">Blog</Link>
                     <Link className={buttonVariants({ variant: "ghost" })} href="/create">Create</Link>
                 </div>
