@@ -17,6 +17,7 @@ import {
     FieldGroup,
     FieldLabel
 } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
 
 export default function Signup() {
     const form = useForm({
@@ -28,6 +29,10 @@ export default function Signup() {
         }
     });
 
+    function onSubmit() {
+        console.log("Submitted")
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -35,19 +40,42 @@ export default function Signup() {
                 <CardDescription>Create an account to get started</CardDescription>
             </CardHeader>
             <CardContent>
-                <form action="#">
-                    <FieldGroup>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <FieldGroup className="gap-y-5">
                         <Controller name="name"
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field>
                                     <FieldLabel>Full Name</FieldLabel>
-                                    <Input placeholder="RK Razz" {...field} />
+                                    <Input aria-invalid={fieldState.invalid} placeholder="RK Razz" {...field} />
                                     {fieldState.invalid && (
                                         <FieldError errors={fieldState.error ? [fieldState.error] : []} />
                                     )}
                                 </Field>
                             )} />
+                        <Controller name="email"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field>
+                                    <FieldLabel>Email</FieldLabel>
+                                    <Input aria-invalid={fieldState.invalid} placeholder="abc@gmail.com" {...field} />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={fieldState.error ? [fieldState.error] : []} />
+                                    )}
+                                </Field>
+                            )} />
+                        <Controller name="password"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field>
+                                    <FieldLabel>Password</FieldLabel>
+                                    <Input aria-invalid={fieldState.invalid} placeholder="******" type="password" {...field} />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={fieldState.error ? [fieldState.error] : []} />
+                                    )}
+                                </Field>
+                            )} />
+                        <Button className="cursor-pointer">Sign up</Button>
                     </FieldGroup>
                 </form>
             </CardContent>
