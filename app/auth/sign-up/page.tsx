@@ -21,8 +21,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
-export default function Signup() {
+export default function SignupPage() {
+    const [isPending, startTransition] = useTransition();
+
+    const router = useRouter();
     const form = useForm({
         resolver: zodResolver(signUpSchema),
         defaultValues: {
@@ -32,12 +39,23 @@ export default function Signup() {
         }
     });
 
-    async function onSubmit(data: z.infer<typeof signUpSchema>) {
-        await authClient.signUp.email({
-            email: data.email,
-            name: data.name,
-            password: data.password,
-        });
+    function onSubmit(data: z.infer<typeof signUpSchema>) {
+        startTransition(async () => {
+            await authClient.signUp.email({
+                email: data.email,
+                name: data.name,
+                password: data.password,
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Account created successfully");
+                        router.push("/");
+                    },
+                    onError: (error) => {
+                        toast.error(error.error.message);
+                    },
+                },
+            });
+        })
     }
 
     return (
@@ -82,7 +100,16 @@ export default function Signup() {
                                     )}
                                 </Field>
                             )} />
-                        <Button className="cursor-pointer">Sign up</Button>
+                        <Button disabled={isPending} className="cursor-pointer">
+                            {isPending ? (
+                                <>
+                                    <Loader2 className="size-4 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <span>Sign up</span>
+                            )}
+                        </Button>
                     </FieldGroup>
                 </form>
                 <p className="text-center mt-2.5">Already have an account? <span className="text-red-600 ml-2 underline hover:text-blue-500"> <Link href="/auth/login">Signin</Link> </span></p>

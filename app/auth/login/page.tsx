@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { signUpSchema } from "../schemas/auth";
+import { loginSchema } from "../schemas/auth";
 import { Input } from "@/components/ui/input";
 import {
     Field,
@@ -19,25 +19,48 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import z from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
+import { spawn } from "child_process";
 
-export default function Signup() {
+export default function LoginPage() {
+    const [isPending, startTransition] = useTransition();
+
+    const router = useRouter()
     const form = useForm({
-        resolver: zodResolver(signUpSchema),
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
             password: "",
         }
     });
 
-    function onSubmit() {
-        console.log("Submitted")
+    function onSubmit(data: z.infer<typeof loginSchema>) {
+        startTransition(async () => {
+            await authClient.signIn.email({
+                email: data.email,
+                password: data.password,
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Logged in successfully");
+                        router.push("/");
+                    },
+                    onError: (error) => {
+                        toast.error(error.error.message);
+                    },
+                },
+            });
+        })
     }
-
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Login</CardTitle>
-                <CardDescription>signin to create or read the blog</CardDescription>
+                <CardDescription>login to create or read blogs</CardDescription>
             </CardHeader>
             <CardContent>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -64,7 +87,16 @@ export default function Signup() {
                                     )}
                                 </Field>
                             )} />
-                        <Button className="cursor-pointer">Login</Button>
+                        <Button disabled={isPending} className="cursor-pointer">
+                            {isPending ? (
+                                <>
+                                    <Loader2 className="size-4 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <span>Login</span>
+                            )}
+                        </Button>
                     </FieldGroup>
                 </form>
                 <p className="text-center mt-2.5">Don't have an account? Create one<span className="text-red-600 ml-2 underline hover:text-blue-500"> <Link href="/auth/sign-up">Signup</Link> </span></p>
