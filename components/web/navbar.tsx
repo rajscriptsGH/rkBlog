@@ -25,7 +25,7 @@ export function Navbar() {
             <div className="flex items-center gap-2">
                 <ThemeToggle />
                 {isLoading ? null : isAuthenticated ? (
-                    <Button onClick={() => authClient.signOut({})}>Logout</Button>
+                    <Button className="cursor-pointer" onClick={() => authClient.signOut({})}>Logout</Button>
                 ) : (
                     <>
                         <Link className={buttonVariants({ variant: "outline" })} href="/auth/login">Login</Link>
