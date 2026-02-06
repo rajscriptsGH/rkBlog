@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 export default function Signup() {
     const form = useForm({
@@ -84,6 +85,7 @@ export default function Signup() {
                         <Button className="cursor-pointer">Sign up</Button>
                     </FieldGroup>
                 </form>
+                <p className="text-center mt-2.5">Already have an account? <span className="text-red-600 ml-2 underline hover:text-blue-500"> <Link href="/auth/login">Signin</Link> </span></p>
             </CardContent>
         </Card>
     )

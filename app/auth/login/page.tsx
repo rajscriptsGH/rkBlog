@@ -18,6 +18,7 @@ import {
     FieldLabel
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Signup() {
     const form = useForm({
@@ -66,6 +67,7 @@ export default function Signup() {
                         <Button className="cursor-pointer">Login</Button>
                     </FieldGroup>
                 </form>
+                <p className="text-center mt-2.5">Don't have an account? Create one<span className="text-red-600 ml-2 underline hover:text-blue-500"> <Link href="/auth/sign-up">Signup</Link> </span></p>
             </CardContent>
         </Card>
     )
